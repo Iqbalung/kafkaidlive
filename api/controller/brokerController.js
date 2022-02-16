@@ -31,6 +31,7 @@ class BrokerController {
       const producer = kafka.producer()
 
       const produce = async () => {
+        console.log('produce')
         await producer.connect()
         await producer.send({
           topic: 'getBca',
