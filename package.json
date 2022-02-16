@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --experimental-modules --es-module-specifier-resolution=node server.js"
+    "dev": "nodemon --experimental-modules --es-module-specifier-resolution=node server.js",
+    "eslint": "eslint --fix ."
   },
   "keywords": [
     "broker"
@@ -16,7 +17,12 @@
   "dependencies": {
     "axios": "^0.26.0",
     "body-parser": "^1.19.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
     "express": "^4.17.2",
     "kafkajs": "^1.16.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.9.0"
   }
 }
