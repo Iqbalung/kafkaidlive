@@ -15,45 +15,45 @@ class BrokerController {
     }
   }
 
-  static async brokerProduce(request, response) {
-    try {
-      const data = request.body
-      const kafka = new Kafka({
-        clientId: 'my-app',
-        brokers: ['worthy-longhorn-12974-us1-kafka.upstash.io:9092'],
-        sasl: {
-          mechanism: process.env.KAFKA_MECHANISM,
-          username: process.env.KAFKA_USERNAME,
-          password: process.env.KAFKA_PASSWORD,
-        },
-        ssl: true,
-      })
-      const producer = kafka.producer()
+  // static async brokerProduce(request, response) {
+  //   try {
+  //     const data = request.body
+  //     const kafka = new Kafka({
+  //       clientId: 'my-app',
+  //       brokers: ['worthy-longhorn-12974-us1-kafka.upstash.io:9092'],
+  //       sasl: {
+  //         mechanism: process.env.KAFKA_MECHANISM,
+  //         username: process.env.KAFKA_USERNAME,
+  //         password: process.env.KAFKA_PASSWORD,
+  //       },
+  //       ssl: true,
+  //     })
+  //     const producer = kafka.producer()
 
-      const produce = async () => {
-        await producer.connect()
-        await producer.send({
-          topic: 'getBca',
-          messages: [
-            {
-              value: JSON.stringify(data),
-            },
-          ],
-        })
-        await producer.disconnect()
-      }
-      produce()
-      return response.status(200).json({
-        success: true,
-        message: 'produce done',
-      })
-    } catch (error) {
-      return response.status(301).json({
-        success: true,
-        message: error.message,
-      })
-    }
-  }
+  //     const produce = async () => {
+  //       await producer.connect()
+  //       await producer.send({
+  //         topic: 'getBca',
+  //         messages: [
+  //           {
+  //             value: JSON.stringify(data),
+  //           },
+  //         ],
+  //       })
+  //       await producer.disconnect()
+  //     }
+  //     produce()
+  //     return response.status(200).json({
+  //       success: true,
+  //       message: 'produce done',
+  //     })
+  //   } catch (error) {
+  //     return response.status(301).json({
+  //       success: true,
+  //       message: error.message,
+  //     })
+  //   }
+  // }
 
   static async brokerConsume(request, response) {
     try {
@@ -73,6 +73,7 @@ class BrokerController {
       })
 
       const consume = async () => {
+        console.log('consume')
         await consumer.connect()
         await consumer.subscribe({
           topic: 'getBca',

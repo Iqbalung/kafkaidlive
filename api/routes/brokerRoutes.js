@@ -5,9 +5,9 @@ export default (app) => {
     BrokerController.brokerTest(request, response)
   })
     
-  app.route('/produce').post((request, response) => {
-    BrokerController.brokerProduce(request, response)
-  })
+  // app.route('/produce').post((request, response) => {
+  //   BrokerController.brokerProduce(request, response)
+  // })
     
   app.route('/consume').post((request, response) => {
     BrokerController.brokerConsume(request, response)
