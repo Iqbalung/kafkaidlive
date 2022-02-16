@@ -17,9 +17,7 @@ class BrokerController {
 
   static async brokerProduce(request, response) {
     try {
-      // console.log(request.body);
       const data = request.body
-      console.log('data', data)
       const kafka = new Kafka({
         clientId: 'my-app',
         brokers: ['worthy-longhorn-12974-us1-kafka.upstash.io:9092'],
@@ -83,16 +81,14 @@ class BrokerController {
 
         await consumer.run({
           eachMessage: async ({ topic, partition, message }) => {
+            console.log('consume '+topic)
             if(message.value.toString().length > 15){
-              console.log(JSON.parse(message.value), typeof(JSON.parse(message.value)))
               this.sendmessage({
                 topic: topic,
                 partition: partition,
                 message: JSON.stringify(message),
                 val: JSON.parse(message.value),
               })
-            }else{
-              console.log(message.value, message.value.toString(), typeof(message.value))
             }
           },
         })
@@ -114,7 +110,7 @@ class BrokerController {
   static async sendmessage(data) {
     const config = {
       method: 'post',
-      url: 'http://localhost:8080/process-curl',
+      url: process.env.BACKEND_PROCESS_URL,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -124,7 +120,6 @@ class BrokerController {
     axios(config)
       .then((response) => {
         console.log(response.status)
-        console.log(JSON.stringify(response.data))
       })
       .catch((error) => {
         console.log(error)
