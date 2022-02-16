@@ -9,7 +9,7 @@ export default (app) => {
     BrokerController.brokerProduce(request, response)
   })
     
-  app.route('/consume').post((request, response) => {
-    BrokerController.brokerConsume(request, response)
-  })
+  // app.route('/consume').post((request, response) => {
+  //   BrokerController.brokerConsume(request, response)
+  // })
 }

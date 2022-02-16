@@ -55,76 +55,76 @@ class BrokerController {
     }
   }
 
-  static async brokerConsume(request, response) {
-    try {
-      const kafka = new Kafka({
-        clientId: 'my-app',
-        brokers: ['worthy-longhorn-12974-us1-kafka.upstash.io:9092'],
-        sasl: {
-          mechanism: process.env.KAFKA_MECHANISM,
-          username: process.env.KAFKA_USERNAME,
-          password: process.env.KAFKA_PASSWORD,
-        },
-        ssl: true,
-      })
+  // static async brokerConsume(request, response) {
+  //   try {
+  //     const kafka = new Kafka({
+  //       clientId: 'my-app',
+  //       brokers: ['worthy-longhorn-12974-us1-kafka.upstash.io:9092'],
+  //       sasl: {
+  //         mechanism: process.env.KAFKA_MECHANISM,
+  //         username: process.env.KAFKA_USERNAME,
+  //         password: process.env.KAFKA_PASSWORD,
+  //       },
+  //       ssl: true,
+  //     })
 
-      const consumer = kafka.consumer({
-        groupId: 'scrapping',
-      })
+  //     const consumer = kafka.consumer({
+  //       groupId: 'scrapping',
+  //     })
 
-      const consume = async () => {
-        await consumer.connect()
-        await consumer.subscribe({
-          topic: 'getBca',
-          fromBeginning: true,
-        })
+  //     const consume = async () => {
+  //       await consumer.connect()
+  //       await consumer.subscribe({
+  //         topic: 'getBca',
+  //         fromBeginning: true,
+  //       })
 
-        await consumer.run({
-          eachMessage: async ({ topic, partition, message }) => {
-            console.log('consume '+topic)
-            if(message.value.toString().length > 15){
-              this.sendmessage({
-                topic: topic,
-                partition: partition,
-                message: JSON.stringify(message),
-                val: JSON.parse(message.value),
-              })
-            }
-          },
-        })
-      }
-      consume()
+  //       await consumer.run({
+  //         eachMessage: async ({ topic, partition, message }) => {
+  //           console.log('consume '+topic)
+  //           if(message.value.toString().length > 15){
+  //             this.sendmessage({
+  //               topic: topic,
+  //               partition: partition,
+  //               message: JSON.stringify(message),
+  //               val: JSON.parse(message.value),
+  //             })
+  //           }
+  //         },
+  //       })
+  //     }
+  //     consume()
 
-      return response.status(200).json({
-        success: true,
-        message: 'consume done',
-      })
-    } catch (error) {
-      return response.status(301).json({
-        success: true,
-        message: error.message,
-      })
-    }
-  }
+  //     return response.status(200).json({
+  //       success: true,
+  //       message: 'consume done',
+  //     })
+  //   } catch (error) {
+  //     return response.status(301).json({
+  //       success: true,
+  //       message: error.message,
+  //     })
+  //   }
+  // }
 
-  static async sendmessage(data) {
-    const config = {
-      method: 'post',
-      url: process.env.BACKEND_PROCESS_URL,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: Object.keys(data.val),
-    }
+  // static async sendmessage(data) {
+  //   const config = {
+  //     method: 'post',
+  //     url: process.env.BACKEND_PROCESS_URL,
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     data: Object.keys(data.val),
+  //   }
 
-    axios(config)
-      .then((response) => {
-        console.log(response.status)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
+  //   axios(config)
+  //     .then((response) => {
+  //       console.log(response.status)
+  //     })
+  //     .catch((error) => {
+  //       console.log(error)
+  //     })
+  // }
 }
 
 export default BrokerController
