@@ -59,7 +59,7 @@ class BrokerController {
     try {
       const kafka = new Kafka({
         clientId: 'my-app',
-        brokers: ['worthy-longhorn-12974-us1-kafka.upstash.io:9092'],
+        brokers: ['native-meerkat-14805-us1-kafka.upstash.io:9092'],
         sasl: {
           mechanism: process.env.KAFKA_MECHANISM,
           username: process.env.KAFKA_USERNAME,
@@ -69,14 +69,14 @@ class BrokerController {
       })
 
       const consumer = kafka.consumer({
-        groupId: 'scrapping',
+        groupId: 'newscrapping',
       })
 
       const consume = async () => {
         console.log('consume')
         await consumer.connect()
         await consumer.subscribe({
-          topic: 'getBca',
+          topic: 'NewScrapping',
           fromBeginning: true,
         })
 
