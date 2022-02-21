@@ -117,8 +117,9 @@ class BrokerController {
         'Content-Type': 'application/json',
       },
       data: Object.keys(data.val),
+      datas: Object.keys(data.val[0]),
     }
-
+    console.log(config)
     axios(config)
       .then((response) => {
         console.log('status', response.status)
