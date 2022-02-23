@@ -82,7 +82,7 @@ class BrokerController {
 
         await consumer.run({
           eachMessage: async ({ topic, partition, message }) => {
-            console.log('consume '+topic)
+            console.log('consume '+topic, message.value.toString(), new Date().toLocaleString())
             if(message.value.toString().length > 15){
               this.sendmessage({
                 topic: topic,
@@ -119,8 +119,8 @@ class BrokerController {
     }
     axios(config)
       .then((response) => {
-        console.log('status', response.status)
-        console.log('data ',response.status.data)
+        console.log('status', response.status, new Date().toLocaleString())
+        console.log('data ',response.data.data)
       })
       .catch((error) => {
         if (error.response) {
