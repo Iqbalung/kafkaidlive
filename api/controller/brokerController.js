@@ -18,8 +18,7 @@ class BrokerController {
   static async brokerProduce(request, response) {
     try {
       const data = request.body
-      console.log(typeof data, data)
-      // data.value.dateTimeProduce = new Date().toLocaleString()
+      data.dateTimeProduce = new Date().toLocaleString()
       const kafka = new Kafka({
         clientId: 'my-app',
         brokers: ['native-meerkat-14805-us1-kafka.upstash.io:9092'],
