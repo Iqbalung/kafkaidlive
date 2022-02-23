@@ -31,7 +31,7 @@ class BrokerController {
       const producer = kafka.producer()
 
       const produce = async () => {
-        console.log('produce')
+        console.log('produce', new Date().toLocaleString(), JSON.stringify(data))
         await producer.connect()
         await producer.send({
           topic: 'NewScrapping',
