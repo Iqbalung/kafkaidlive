@@ -120,7 +120,8 @@ class BrokerController {
     axios(config)
       .then((response) => {
         console.log('status', response.status, new Date().toLocaleString())
-        console.log('data ',response.data.data)
+        console.log('configData', JSON.stringify(config.data))
+        console.log('data ',response.data)
       })
       .catch((error) => {
         if (error.response) {
