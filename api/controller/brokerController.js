@@ -19,7 +19,7 @@ class BrokerController {
       const data = request.body
       const kafka = new Kafka({
         clientId: 'my-app',
-        brokers: ['worthy-longhorn-12974-us1-kafka.upstash.io:9092'],
+        brokers: ['native-meerkat-14805-us1-kafka.upstash.io:9092'],
         sasl: {
           mechanism: process.env.KAFKA_MECHANISM,
           username: process.env.KAFKA_USERNAME,
@@ -33,7 +33,7 @@ class BrokerController {
         console.log('produce', new Date().toLocaleString(), JSON.stringify(data))
         await producer.connect()
         await producer.send({
-          topic: 'getBca',
+          topic: 'NewScrapping',
           messages: [
             {
               value: JSON.stringify(data),
