@@ -4,6 +4,8 @@ import brokerRoutes from './api/routes/brokerRoutes.js'
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import momentTz from 'moment-timezone'
+import moment from 'moment'
  
 dotenv.config()
 const port = process.env.PORT || 5000
@@ -20,6 +22,9 @@ app.use(bodyParser.json())
 
 app.use(cors())
  
+momentTz.tz.setDefault('Asia/Jakarta')
+console.log(moment().format('YYYY-MM-DD'), moment().format('dddd'), moment().format('HH:mm:ss'))
+
 // basic route
 app.get('/', (req, res) => {
   res.send('Hello World')
