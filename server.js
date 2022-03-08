@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import momentTz from 'moment-timezone'
 import moment from 'moment'
+import BrokerController from './api/controller/brokerController.js'
  
 dotenv.config()
 const port = process.env.PORT || 5000
@@ -31,6 +32,8 @@ app.get('/', (req, res) => {
 })
 
 brokerRoutes(app)
+
+BrokerController.runCron()
  
 // listen on port
 app.listen(port, () => console.log('Server Running at http://localhost:'+port))

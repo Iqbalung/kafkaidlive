@@ -3,16 +3,30 @@ import { Kafka } from 'kafkajs'
 import moment from 'moment'
 import cron from 'node-cron'
 
-let task = cron.schedule('*/3 * * * * *', () =>  {
-  console.log('start', 'aa')
-  this.getAccount()
-}, {
-  scheduled: false
-})
-  
-task.start()
-
 class BrokerController {
+
+  static runCron(request, response) {
+    let task = cron.schedule('*/3 * * * * *', () =>  {
+      try {
+        console.log('start', 'aa')
+        
+        const produce = this.getAccount()
+
+        if (produce.status === true) {
+          return response.status(200).json(produce)
+        } else {
+          return response.status(301).json(produce)
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }, {
+      scheduled: false
+    })
+      
+    task.start()
+  }
+
   static async brokerTest(request, response) {
     try {
       return response.status(200).json({
@@ -51,11 +65,8 @@ class BrokerController {
           }
         }
         const produce = await this.brokerProduce(data)
-        if (produce.status === true) {
-          return response.status(200).json(produce)
-        }else{
-          return response.status(301).json(produce)
-        }
+
+        return produce
       })
     } catch (error) {
       return response.status(301).json({
@@ -81,7 +92,7 @@ class BrokerController {
       const producer = kafka.producer()
 
       const produce = async (data) => {
-        console.log('produce', new Date().toLocaleString(), JSON.stringify(data))
+        console.log('produce', new Date().toLocaleString(), JSON.stringify(JSON.stringify(data)))
         await producer.connect()
         await producer.send({
           topic: 'NewScrapping',
