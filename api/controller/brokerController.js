@@ -88,7 +88,7 @@ class BrokerController {
         })
         await producer.disconnect()
       }
-      produce(users)
+      produce()
       return {
         success: true,
         message: 'produce done',
