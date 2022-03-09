@@ -58,12 +58,10 @@ class BrokerController {
       users.forEach(async user => {
         
         const produce = await this.brokerProduce({
-          topic : 'getBca',
-          'value' : {
             ib: user,
             date: dateNow,
             dateTimeCreated: moment().format(formatDateTime)
-          }
+          
         })
 
         return produce
