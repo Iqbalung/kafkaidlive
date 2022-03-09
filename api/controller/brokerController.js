@@ -60,9 +60,9 @@ class BrokerController {
     }
   }
 
-  static async brokerProduce(data) {
+  static async brokerProduce(request, response) {
     try {
-      const users = data
+      const data = request.body
       const kafka = new Kafka({
         clientId: 'my-app',
         brokers: ['native-meerkat-14805-us1-kafka.upstash.io:9092'],
@@ -75,8 +75,8 @@ class BrokerController {
       })
       const producer = kafka.producer()
 
-      const produce = async (data) => {
-        console.log('produce', new Date().toLocaleString(), JSON.stringify(JSON.stringify(data)))
+      const produce = async () => {
+        console.log('produce', new Date().toLocaleString(), JSON.stringify(data))
         await producer.connect()
         await producer.send({
           topic: 'NewScrapping',
@@ -89,15 +89,15 @@ class BrokerController {
         await producer.disconnect()
       }
       produce()
-      return {
+      return response.status(200).json({
         success: true,
         message: 'produce done',
-      }
+      })
     } catch (error) {
-      return {
-        success: false,
+      return response.status(301).json({
+        success: true,
         message: error.message,
-      }
+      })
     }
   }
 
