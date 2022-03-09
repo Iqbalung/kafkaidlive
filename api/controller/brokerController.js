@@ -56,27 +56,21 @@ class BrokerController {
       }
       const users = await BcaUsers.find()
       users.forEach(async user => {
-        let obj = {}
-        obj.username = user.username;
-        obj.password = user.password;
-        obj.name = user.username;
-
-        console.log('test',{
-            ib: obj,
-            date: dateNow,
-            dateTimeCreated: moment().format(formatDateTime)
-          
-        });
-        const produce = await this.brokerProduce({
-          topic : 'getBca',
-          'value' : {
-              ib: obj,
-              date: dateNow,
-              dateTimeCreated: moment().format(formatDateTime)
-            
+        let obj = {
+          'topic':'getBca',
+          'value':{
+            'date':dateNow,
+            'ib':{
+              'username':user.username,
+              'password':user.password,
+              'name':user.username
+            },
+            'dateTimeCreated':moment().format(formatDateTime)
           }
-          
-        })
+        }
+        
+        console.log('test',obj);
+        const produce = await this.brokerProduce(obj)
 
         return produce
       })
