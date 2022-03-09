@@ -1,5 +1,14 @@
+import {BcaUsers} from'../model/bcaUsersModel'
 import { Kafka } from 'kafkajs'
+import moment from 'moment'
+import cron from 'node-cron'
+
 class BrokerController {
+
+  static runCron(request, response) {
+    
+  }
+
   static async brokerTest(request, response) {
     try {
       return response.status(200).json({
@@ -14,9 +23,46 @@ class BrokerController {
     }
   }
 
-  static async brokerProduce(request, response) {
+  static async getAccount(request, response) {
     try {
-      const data = request.body
+      const formatTime = 'HH:mm'
+      const formatDate = 'YYYY-MM-DD'
+      const formatDateTime = 'YYYY-MM-DD HH:mm:ss'
+      let dateNow = moment().format(formatDate)
+      const dayName = moment().format('dddd')
+      if (dayName !== 'Saturday' || dayName !== 'Monday') {
+        const startTime = moment('22:00', formatTime), endTime = moment('23:59', formatTime)
+        if(moment().isBetween(startTime, endTime)){
+          dateNow = moment(dateNow, formatDate).add(1, 'days').format(formatDate)
+        }
+      }
+      const users = await BcaUsers.find()
+      users.forEach(async user => {
+        let obj = {
+          'date':dateNow,
+          'ib':{
+            'username':user.username,
+            'password':user.password,
+            'name':user.username
+          },
+          'dateTimeCreated':moment().format(formatDateTime)
+        }
+
+        const produce = await this.brokerProduce(obj)
+        
+        return produce
+      })
+    } catch (error) {
+      return response.status(301).json({
+        success: false,
+        error: error.message,
+      })
+    }
+  }
+
+  static async brokerProduce(data) {
+    try {
+      const users = data
       const kafka = new Kafka({
         clientId: 'my-app',
         brokers: ['native-meerkat-14805-us1-kafka.upstash.io:9092'],
@@ -29,8 +75,8 @@ class BrokerController {
       })
       const producer = kafka.producer()
 
-      const produce = async () => {
-        console.log('produce', new Date().toLocaleString(), JSON.stringify(data))
+      const produce = async (data) => {
+        console.log('produce', new Date().toLocaleString(), JSON.stringify(JSON.stringify(data)))
         await producer.connect()
         await producer.send({
           topic: 'NewScrapping',
@@ -42,16 +88,16 @@ class BrokerController {
         })
         await producer.disconnect()
       }
-      produce()
-      return response.status(200).json({
+      produce(users)
+      return {
         success: true,
         message: 'produce done',
-      })
+      }
     } catch (error) {
-      return response.status(301).json({
-        success: true,
+      return {
+        success: false,
         message: error.message,
-      })
+      }
     }
   }
 
