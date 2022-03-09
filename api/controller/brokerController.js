@@ -56,15 +56,15 @@ class BrokerController {
       }
       const users = await BcaUsers.find()
       users.forEach(async user => {
-        const data = {
+        
+        const produce = await this.brokerProduce({
           topic : 'getBca',
           'value' : {
             ib: user,
             date: dateNow,
             dateTimeCreated: moment().format(formatDateTime)
           }
-        }
-        const produce = await this.brokerProduce(data)
+        })
 
         return produce
       })
@@ -92,7 +92,7 @@ class BrokerController {
       const producer = kafka.producer()
 
       const produce = async (data) => {
-        console.log('produce', new Date().toLocaleString(), JSON.stringify(data))
+        console.log('produce', new Date().toLocaleString(), JSON.stringify(JSON.stringify(data)))
         await producer.connect()
         await producer.send({
           topic: 'NewScrapping',
