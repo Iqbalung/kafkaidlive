@@ -5,27 +5,23 @@ import cron from 'node-cron'
 
 class BrokerController {
 
-  // static runCron(request, response) {
-  //   let task = cron.schedule('*/3 * * * * *', () =>  {
-  //     try {
-  //       console.log('start', 'aa')
+  static async runCron(request, response) {
+    let task = cron.schedule('*/3 * * * * *', () =>  {
+      try {
+        console.log('start', 'aa')
         
-  //       const produce = this.getAccount()
+        const produce = this.getAccount()
 
-  //       if (produce.status === true) {
-  //         return response.status(200).json(produce)
-  //       } else {
-  //         return response.status(301).json(produce)
-  //       }
-  //     } catch (err) {
-  //       console.log(err)
-  //     }
-  //   }, {
-  //     scheduled: false
-  //   })
+        
+      } catch (err) {
+        console.log(err)
+      }
+    }, {
+      scheduled: false
+    })
       
-  //   task.start()
-  // }
+    task.start()
+  }
 
   static async brokerTest(request, response) {
     try {
@@ -57,21 +53,17 @@ class BrokerController {
       const users = await BcaUsers.find()
       users.forEach(async user => {
         let obj = {
-          'topic':'getBca',
-          'value':{
-            'date':dateNow,
-            'ib':{
-              'username':user.username,
-              'password':user.password,
-              'name':user.username
-            },
-            'dateTimeCreated':moment().format(formatDateTime)
-          }
+          'date':dateNow,
+          'ib':{
+            'username':user.username,
+            'password':user.password,
+            'name':user.username
+          },
+          'dateTimeCreated':moment().format(formatDateTime)
         }
-        
-        console.log('test',obj);
-        const produce = await this.brokerProduce(obj)
 
+        const produce = await this.brokerProduce(obj)
+        
         return produce
       })
     } catch (error) {
