@@ -5,27 +5,27 @@ import cron from 'node-cron'
 
 class BrokerController {
 
-  static runCron(request, response) {
-    let task = cron.schedule('*/3 * * * * *', () =>  {
-      try {
-        console.log('start', 'aa')
+  // static runCron(request, response) {
+  //   let task = cron.schedule('*/3 * * * * *', () =>  {
+  //     try {
+  //       console.log('start', 'aa')
         
-        const produce = this.getAccount()
+  //       const produce = this.getAccount()
 
-        if (produce.status === true) {
-          return response.status(200).json(produce)
-        } else {
-          return response.status(301).json(produce)
-        }
-      } catch (err) {
-        console.log(err)
-      }
-    }, {
-      scheduled: false
-    })
+  //       if (produce.status === true) {
+  //         return response.status(200).json(produce)
+  //       } else {
+  //         return response.status(301).json(produce)
+  //       }
+  //     } catch (err) {
+  //       console.log(err)
+  //     }
+  //   }, {
+  //     scheduled: false
+  //   })
       
-    task.start()
-  }
+  //   task.start()
+  // }
 
   static async brokerTest(request, response) {
     try {
