@@ -84,12 +84,12 @@ class BrokerController {
           eachMessage: async ({ topic, partition, message }) => {
             console.log('consume '+topic, message.value.toString(), new Date().toLocaleString())
             if(message.value.toString().length > 15){
-              this.sendmessage({
-                topic: topic,
-                partition: partition,
-                message: JSON.stringify(message),
-                val: JSON.parse(message.value),
-              })
+              // this.sendmessage({
+              //   topic: topic,
+              //   partition: partition,
+              //   message: JSON.stringify(message),
+              //   val: JSON.parse(message.value),
+              // })
             }
           },
         })
