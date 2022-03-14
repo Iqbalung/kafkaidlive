@@ -117,6 +117,7 @@ class BrokerController {
       },
       data: Object.keys(data.val),
     }
+    console.log(config.data)
     axios(config)
       .then((response) => {
         console.log('status', response.status, new Date().toLocaleString())
