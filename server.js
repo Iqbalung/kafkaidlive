@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import momentTz from 'moment-timezone'
 import moment from 'moment'
+import cron from 'node-cron'
 import BrokerController from './api/controller/brokerController.js'
  
 dotenv.config()
@@ -33,7 +34,14 @@ app.get('/', (req, res) => {
 
 brokerRoutes(app)
 
-BrokerController.runCron()
+const task = cron.schedule('*/2 * * * * *', () => {
+  console.log('start')
+  BrokerController.getAccount()
+}, {
+  scheduled: false
+})
+
+task.start();
  
 // listen on port
 app.listen(port, () => console.log('Server Running at http://localhost:'+port))

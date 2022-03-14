@@ -1,13 +1,8 @@
 import {BcaUsers} from'../model/bcaUsersModel'
 import { Kafka } from 'kafkajs'
 import moment from 'moment'
-import cron from 'node-cron'
 
 class BrokerController {
-
-  static runCron(request, response) {
-    
-  }
 
   static async brokerTest(request, response) {
     try {
@@ -37,26 +32,23 @@ class BrokerController {
         }
       }
       const users = await BcaUsers.find()
-      users.forEach(async user => {
-        let obj = {
-          'date':dateNow,
-          'ib':{
-            'username':user.username,
-            'password':user.password,
-            'name':user.username
-          },
-          'dateTimeCreated':moment().format(formatDateTime)
+      users.map(async user => {
+        const obj = {
+          topic: 'getBca',
+          value:{
+            ib:user,
+            date:dateNow,
+            dateTimeCreated:moment().format(formatDateTime)
+          }
         }
-
-        const produce = await this.brokerProduce(obj)
-        
-        return produce
+        await this.funcProduce(obj)
       })
+      return {status:true, message:'getBca Done'}
     } catch (error) {
-      return response.status(301).json({
+      return {
         success: false,
         error: error.message,
-      })
+      }
     }
   }
 
@@ -88,7 +80,7 @@ class BrokerController {
         })
         await producer.disconnect()
       }
-      produce()
+      // produce()
       return response.status(200).json({
         success: true,
         message: 'produce done',
@@ -98,6 +90,46 @@ class BrokerController {
         success: true,
         message: error.message,
       })
+    }
+  }
+
+  static async funcProduce(data) {
+    try {
+      const kafka = new Kafka({
+        clientId: 'my-app',
+        brokers: ['native-meerkat-14805-us1-kafka.upstash.io:9092'],
+        sasl: {
+          mechanism: process.env.KAFKA_MECHANISM,
+          username: process.env.KAFKA_USERNAME,
+          password: process.env.KAFKA_PASSWORD,
+        },
+        ssl: true,
+      })
+      const producer = kafka.producer()
+
+      const produce = async () => {
+        console.log('produce', new Date().toLocaleString(), JSON.stringify(data))
+        await producer.connect()
+        await producer.send({
+          topic: 'NewScrapping',
+          messages: [
+            {
+              value: JSON.stringify(data),
+            },
+          ],
+        })
+        await producer.disconnect()
+      }
+      produce()
+      return {
+        success: true,
+        message: 'produce done',
+      }
+    } catch (error) {
+      return {
+        success: true,
+        message: error.message,
+      }
     }
   }
 
