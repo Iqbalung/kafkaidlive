@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 
 brokerRoutes(app)
 
-const task = cron.schedule('*/10 * * * * *', () => {
+const task = cron.schedule('* * * * *', () => {
   console.log('start')
   BrokerController.getAccount()
 }, {
