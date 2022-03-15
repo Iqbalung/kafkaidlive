@@ -4,6 +4,7 @@ import brokerRoutes from './api/routes/brokerRoutes.js'
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import BrokerController from './api/controller/brokerController.js'
  
 dotenv.config()
 const port = process.env.PORT || 5000
@@ -26,6 +27,8 @@ app.get('/', (req, res) => {
 })
 
 brokerRoutes(app)
+
+BrokerController.brokerConsumeServer()
  
 // listen on port
 app.listen(port, () => console.log('Server Running at http://localhost:'+port))

@@ -108,6 +108,59 @@ class BrokerController {
     }
   }
 
+  static async brokerConsumeServer() {
+    try {
+      const kafka = new Kafka({
+        clientId: 'my-app',
+        brokers: ['native-meerkat-14805-us1-kafka.upstash.io:9092'],
+        sasl: {
+          mechanism: process.env.KAFKA_MECHANISM,
+          username: process.env.KAFKA_USERNAME,
+          password: process.env.KAFKA_PASSWORD,
+        },
+        ssl: true,
+      })
+
+      const consumer = kafka.consumer({
+        groupId: 'newscrapping',
+      })
+
+      const consume = async () => {
+        console.log('consume')
+        await consumer.connect()
+        await consumer.subscribe({
+          topic: 'NewScrapping',
+          fromBeginning: true,
+        })
+
+        await consumer.run({
+          eachMessage: async ({ topic, partition, message }) => {
+            console.log('consume '+topic, message.value.toString(), new Date().toLocaleString())
+            if(message.value.toString().length > 15){
+              this.sendmessage({
+                topic: topic,
+                partition: partition,
+                message: JSON.stringify(message),
+                val: JSON.parse(message.value),
+              })
+            }
+          },
+        })
+      }
+      consume()
+
+      return {
+        success: true,
+        message: 'consume done',
+      }
+    } catch (error) {
+      return {
+        success: true,
+        message: error.message,
+      }
+    }
+  }
+
   static async sendmessage(data) {
     const config = {
       method: 'post',
